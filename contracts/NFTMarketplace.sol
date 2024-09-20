@@ -24,7 +24,7 @@ contract NFTMarketplace is ERC721URIStorage, Ownable(msg.sender), Pausable {
     constructor() ERC721("NFTMarketplace", "NFTM") {}
 
     
-    function mintNFT(string memory tokenURI, uint256 price) public returns (uint256) {
+    function mintNFT(string memory tokenURI, uint256 price) public whenNotPaused returns (uint256) {
         require(price > 0, "Price must be greater than 0");
 
         _tokenIds += 1;  
@@ -45,7 +45,7 @@ contract NFTMarketplace is ERC721URIStorage, Ownable(msg.sender), Pausable {
     }
 
    
-    function listNFT(uint256 tokenId, uint256 price) public {
+    function listNFT(uint256 tokenId, uint256 price) public whenNotPaused {
         require(ownerOf(tokenId) == msg.sender, "Not the owner");
         require(price > 0, "Price must be greater than 0");
 
@@ -56,7 +56,7 @@ contract NFTMarketplace is ERC721URIStorage, Ownable(msg.sender), Pausable {
     }
 
    
-    function buyNFT(uint256 tokenId) public payable {
+    function buyNFT(uint256 tokenId) public whenNotPaused payable {
         NFT memory nft = nfts[tokenId];
         require(nft.isListed, "NFT not for sale");
         require(msg.value >= nft.price, "Insufficient funds");
