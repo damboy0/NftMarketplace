@@ -28,13 +28,21 @@ import {
 
         it("Should mint a new NFT and store the details", async function () {
             const { marketplace, creator } = await loadFixture(deployNFTMarketplace);
-            const price = hre.ethers.parseUnits("1", "18");
+            const price = hre.ethers.parseUnits("1", 18);
             const tokenURI = "ipfs://token-uri";
 
-            const tokenId = await marketplace.connect(creator).mintNFT(tokenURI, price);
-            const nft = await marketplace.nfts(tokenId);
+            const txResponse = await marketplace.connect(creator).mintNFT(tokenURI, price);
+            
+            const txReceipt = await txResponse.wait();
+            // const tokenId = txReceipt.events[0].args.tokenId;
+	        //  const tokenId = txReceipt?.logs[0].topics;
+          
 
-            console.log(nft.creator);
+            const nft = await marketplace.nfts(1n);
+
+
+
+            console.log(nft.creator,nft.price, nft.isListed);
             expect(nft.creator).to.equal(creator.address);
             expect(nft.price).to.equal(price);
             expect(nft.isListed).to.equal(true);
